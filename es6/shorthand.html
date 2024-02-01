@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ES6 縮寫</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="images/favicon.ico" rel="shortcut icon" />
+    <meta charset="UTF-8" />
+    <script src="/javascripts/vendor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.js"></script>
+  </head>
+  <body class="bg-lighter">
+    <div class="container main my-5">
+      <div class="row">
+        <main class="col post">
+          <!-- 章節標題 -->
+          <div class="mb-4">
+            <h1 class="mt-0 text-muted">ES6 縮寫</h1>
+            <small>檔名：<code>shorthand.html</code></small>
+            <div class="alert bg-light">
+              本課程的程式碼會盡可能利用 ES6
+              或其縮寫的形式撰寫，本章節會介紹實戰中的常見縮寫語法
+            </div>
+          </div>
+          <!-- 🔥🔥練習開始🔥🔥 -->
+          <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+          </ul>
+          <script>
+            // #1 語法糖與新增語法
+            // 語法糖：不會影響運作，邏輯與當前 JS 一致
+            const obj = {
+              myName: '物件',
+              fn: function () {
+                return this.myName
+              },
+              /*
+              // 此fn(){} 和上方物件屬性宣告相同。
+              fn(){
+                return this.myName ; 
+              }
+              */
+            }
+
+            console.log(obj.fn())
+
+            // =====
+            // #2 物件字面值 Object literals
+            // #2-1 物件內的函式
+            const obj3 = {
+              myName: '物件',
+              // fn: function () {
+              //   // 請改為縮寫
+              //   return this.myName
+              // },
+
+              fn() {
+                // 請改為縮寫
+                return this.myName
+              },
+            }
+
+            console.log(obj3.fn())
+
+            // #2-2 物件內的變數
+            const person = {
+              name: '小明',
+            }
+
+            const people = {
+              person,
+              // 相當於 person : person
+              // 可以不用去寫上面，直接用person代表
+              // person : person
+            }
+            console.log(
+              '用「單一物件名稱」取代「屬性名與物件名稱同名」的狀況：',
+              people
+            ) //印出含有person物件的people物件內容
+
+            // #3 展開
+            // #3-1 不同陣列合併
+            const groupA = ['小明', '杰倫', '阿姨']
+            const groupB = ['老媽', '老爸']
+            const groupAll = groupA.concat(groupB)
+            //相較於上述的用法，es6可以用「...」來將物件裡面的東西全部複製到特定位置，如下方程式碼：
+            const newGroupAll = [...groupA, ...groupB]
+            console.log('用「...」連接陣列元素：', newGroupAll)
+
+            // #3-2 物件擴展
+            // 新增一個物件包含新方法，同時加入原有的方法
+            //因為JS的函式也是物件，所以也可以用...來將函式加進裡面物件中
+            const methods = {
+              fn1() {
+                console.log(1)
+              },
+              fn2() {
+                console.log(1)
+              },
+            }
+
+            const newMethods = {
+              // 先輸入原內容，包括函式。
+              name: 'I am  newMethods',
+              fn() {
+                console.log('I am the original function in newMethods.')
+              },
+
+              // 將methods內的所有屬性方法複製到newMethods.
+              ...methods,
+            }
+
+            // 列出newMethods
+            console.dir('newMethods包含自己與methos的內容:', newMethods)
+            // call fn() in newMethods
+            newMethods.fn()
+
+            // #3-3 轉成純陣列
+            // querySelectorAll取出來的是陣列的子集，沒有陣列完整的方法，因此會用「...」將內容轉換到一個完整的陣列。
+            const doms = document.querySelectorAll('li')
+            console.log('doms:裡面的方法不是完整陣列該有的函式', doms) // 請轉為純陣列（先看裡面的function有沒有完整）
+
+            // 定義新陣列，用...將doms內的元素放進新陣列：
+            const newDoms = [...doms]
+            console.log('newDoms:裡面的方法有完整陣列該有的函式：', newDoms) //看裡面的function有沒有完整
+
+            // #4 預設值
+            // function sum(a, b) { // 請加入預設值避免錯誤
+            //   return a + b;
+            // }
+            // console.log(sum(1));
+
+            // #4 實際練習
+            function sum(a = 2, b = 37) {
+              // 請加入預設值避免錯誤
+              return a * b
+            }
+            console.log('先定義預設值，預防型別錯誤：', sum(3, 4))
+          </script>
+          <!-- 🙇🙇練習結束🙇🙇 -->
+        </main>
+
+        <aside class="col-md-3">
+          <div class="sticky-top" style="top: 76px">
+            <div class="list-group">
+              <a
+                href="/es6/shorthand.html"
+                class="list-group-item list-group-item-action active"
+              >
+                縮寫
+              </a>
+
+              <a
+                href="/es6/this.html"
+                class="list-group-item list-group-item-action"
+              >
+                this 的運作
+              </a>
+
+              <a
+                href="/es6/arrow_function.html"
+                class="list-group-item list-group-item-action"
+              >
+                箭頭函式
+              </a>
+
+              <a
+                href="/es6/separation_of_concerns.html"
+                class="list-group-item list-group-item-action"
+              >
+                關注點分離
+              </a>
+
+              <a
+                href="/es6/separation_of_concerns_work.html"
+                class="list-group-item list-group-item-action"
+              >
+                關注點分離 練習題
+              </a>
+
+              <a
+                href="/es6/object_reference.html"
+                class="list-group-item list-group-item-action"
+              >
+                物件參考特性
+              </a>
+
+              <a
+                href="/es6/promise.html"
+                class="list-group-item list-group-item-action"
+              >
+                Promise
+              </a>
+
+              <a
+                href="/es6/esModule.html"
+                class="list-group-item list-group-item-action"
+              >
+                ES Module
+              </a>
+
+              <a
+                href="/es6/esModule_2.html"
+                class="list-group-item list-group-item-action"
+              >
+                ES 模組延伸觀念
+              </a>
+            </div>
+            <div class="mt-3 text-end p-2 bg-light rounded">
+              <small class="text-black-50 fw-light mb-0"
+                >文件版本：2022/11/1</small
+              >
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-secondary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Vue 3 練習手冊</a>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link active" href="/es6/shorthand.html"
+                >JS 必備觀念</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/intro/createApp.html">認識 Vue.js</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/template/v-text.html">模板</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/optionsApi/options-methods.html"
+                >方法</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/components/component_register.html"
+                >元件</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/advApi/adv-refs.html">進階</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/router/vue-router.html">路由</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/composition/proxy.html"
+                >Composition API</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/pinia/layout.html">Pinia</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <footer class="footer py-2 bg-light">
+      <div class="container text-center">
+        <small class="text-black-50 fw-light mb-0"
+          >六角學院 Vue 課程專屬文件</small
+        >
+      </div>
+    </footer>
+    <link rel="stylesheet" href="/stylesheets/all.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+  </body>
+</html>

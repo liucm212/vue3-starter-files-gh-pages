@@ -1,0 +1,29 @@
+流程：
+1. 點擊側邊欄ok
+2. 客製化選項
+3. 點擊「加入」（呈現orderList）
+4. 點擊「產生訂單」 (輸出訂單結果)
+
+1. 點擊側邊欄
+1-1. 產生product list
+1-2. 點擊後將資料輸入進tempSelected
+  輸入包含：
+  count : count of the products
+  iceTypeDefault : the default ice type of product.
+  sugarTypeDefault : the default sugar type of product. 
+  toppings : 想加的料
+  ps : 備註
+
+
+2. 客製化選項
+2-1. 正常點擊
+2-2. 如果有default icetype or sugarType，就需要做判斷。
+
+3. 點擊「加入」
+3-1. 將tempSelected中的資料搬移到orderList，
+3-2. 加料要計算價錢，算total的要多算toppingPrice*toppingsCounts
+
+4. 點擊「產生訂單」
+4-1.建立resultOutput（放orderList裡面的東西＆其他properties，所以是一個物件）來存放訂單資料
+4-2. 依照資料對應template位置來輸入data.
+
