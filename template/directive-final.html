@@ -96,15 +96,22 @@
                         <label for="productNum" class="form-label d-block"
                           >甜度*</label
                         >
-                        <div class="form-check form-check-inline">
+                        <div
+                          v-for="(sugar, key) in sugarType"
+                          :key="'sugar' + key"
+                          class="form-check form-check-inline"
+                        >
                           <input
                             class="form-check-input"
                             name="sugarType"
                             type="radio"
-                            id="全糖"
+                            :id="'sugar' + key"
+                            :value="sugar"
+                            :disabled="!tempSelected.hasOwnProperty('defaults') || (tempSelected.defaults.sugar !== '' && tempSelected.defaults.sugar !== sugar)"
+                            v-model="tempSelected.sugarType"
                           />
-                          <label class="form-check-label" for="全糖"
-                            >全糖</label
+                          <label class="form-check-label" :for="'sugar' + key"
+                            >{{sugar}}</label
                           >
                         </div>
                       </div>
@@ -112,14 +119,20 @@
                         <label for="productNum" class="form-label d-block"
                           >加料</label
                         >
-                        <div class="form-check form-check-inline">
+                        <div
+                          v-for="(topping, key) in toppingsType"
+                          :key="'topping'+key"
+                          class="form-check form-check-inline"
+                        >
                           <input
                             class="form-check-input"
                             type="checkbox"
-                            id="椰果"
+                            :id="'topping'+key"
+                            :value="topping"
+                            v-model="tempSelected.toppings"
                           />
-                          <label class="form-check-label" for="椰果"
-                            >椰果</label
+                          <label class="form-check-label" :for="'topping'+key"
+                            >{{topping}}</label
                           >
                         </div>
                       </div>
@@ -128,6 +141,7 @@
                           >備註</label
                         >
                         <textarea
+                          v-model="tempSelected.ps"
                           class="form-control"
                           id="productNotice"
                           rows="2"
@@ -150,7 +164,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="card">
+                  <div v-if="orderList.length!==0" class="card">
                     <div class="card-body">
                       <table class="table">
                         <thead>
@@ -165,19 +179,20 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                          <tr v-for="item in orderList">
                             <th scope="row">
-                              珍珠鮮奶茶<br />
+                              {{item.name}}<br />
                               <small class="text-muted fw-normal"
-                                >備註：阿姨，我不想努力了</small
+                                >備註：{{item.ps}}</small
                               >
                             </th>
-                            <td>正常冰</td>
-                            <td>全糖</td>
-                            <td>椰果</td>
-                            <td>70</td>
-                            <td>1</td>
-                            <td class="text-end">70</td>
+                            <td>{{item.iceType}}</td>
+                            <td>{{item.sugarType}}</td>
+                            <!-- <td v-if="item.toppings.length==0">無</td> -->
+                            <td>{{item.toppings.join(',')}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.count}}</td>
+                            <td class="text-end">{{item.total}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -363,6 +378,7 @@
                 }
               },
               methods: {
+                // when click a product card
                 productSelected(product) {
                   this.tempSelected = {
                     ...product,
@@ -371,6 +387,7 @@
                     toppings: [], //array of toppings
                     iceType: null,
                     sugarType: null,
+                    ps: '',
                   }
                   console.dir(this.tempSelected)
                 },
@@ -394,6 +411,9 @@
 
                   // calculate the price of all products.
                   this.calculateTotalPrice()
+
+                  // clear the content of tempSelected
+                  this.clearTempSelected()
                 },
                 calculateTotalPrice() {
                   // clear the value of total
@@ -403,6 +423,9 @@
                   this.orderList.forEach((item) => {
                     this.totalPrice += item.total
                   })
+                },
+                clearTempSelected() {
+                  this.tempSelected = {}
                 },
               },
             }

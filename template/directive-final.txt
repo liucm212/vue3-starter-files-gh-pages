@@ -18,6 +18,9 @@
 2. 客製化選項
 2-1. 正常點擊
 2-2. 如果有default icetype or sugarType，就需要做判斷。
+-> 以冰塊為例：
+    如果目前選擇的品項沒有defaults的屬性，或是（目前的選項default.ice不是空的 & 目前的選項default.ice和此項目的ice不同）
+      就將該選項的disabled設為true
 
 3. 點擊「加入」
 3-1. 將tempSelected中的資料搬移到orderList，
