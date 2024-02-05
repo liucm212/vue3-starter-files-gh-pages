@@ -22,25 +22,32 @@
           <div id="app" class="mt-2">
             <div class="row h-100">
               <div class="col-md-3 h-100 d-flex flex-column">
-                <!-- landscape list -->
+                <!-- search bar -->
                 <div class="form-floating mb-2">
                   <input
                     type="text"
                     class="form-control"
                     id="search"
                     placeholder="search"
+                    v-model="cacheSearch"
                   />
                   <label for="search">search</label>
                 </div>
+
+                <!-- landscape list -->
                 <div class="list-group option">
                   <label
-                    v-for="(item,key) in filterData"
                     class="list-group-item"
+                    v-for="(item,key) in filterData"
+                    :key="'filter'+key"
                   >
+                    <!-- !cacheArea未作 -->
                     <input
                       class="form-check-input me-1"
                       type="radio"
                       name="area"
+                      :value="item"
+                      @click="cacheArea = item"
                     />
                     {{ item.Name }}
                   </label>
@@ -48,20 +55,28 @@
               </div>
               <div class="col-md-8 h-100 d-flex flex-column">
                 <div class="form-floating">
+                  <!-- history list -->
                   <select
                     id="cacheArea"
                     class="form-select w-50 mb-2"
                     aria-label="select example"
+                    v-model="cacheArea"
                   >
                     <option selected value="" disabled>瀏覽紀錄</option>
+                    <option v-for="(item,key) in browseLog" :value="item">
+                      {{`${item.Name}`}}
+                    </option>
                   </select>
                   <label for="cacheArea">瀏覽紀錄</label>
                 </div>
-                <div class="card overflow-auto">
+
+                <!-- content display -->
+                <div v-if="cacheArea.Name" class="card overflow-auto">
                   <img
-                    :src="datastore.Picture1"
                     class="card-img-top"
-                    :alt="datastore.Name"
+                    v-if="cacheArea.Name!==''"
+                    :src="cacheArea.Picture1"
+                    :alt="cacheArea.Name"
                   />
                   <iframe
                     width="100%"
@@ -73,10 +88,11 @@
                     :src="mapURL"
                   ></iframe>
                   <div class="card-body">
-                    <h5 class="card-title">{{ datastore.Name }}</h5>
-                    <p>{{ datastore.Description }}</p>
+                    <h5 class="card-title">{{ cacheArea.Name }}</h5>
+                    <p>{{ cacheArea.Description }}</p>
                   </div>
                 </div>
+                <div v-else class="card-body">請選擇場域</div>
               </div>
             </div>
           </div>
@@ -103,6 +119,15 @@
                   return this.datastore.filter((item) => {
                     return item.Name.match(this.cacheSearch)
                   })
+                },
+              },
+              watch: {
+                // 監聽cachedArea的變化，並操作多個變數
+                cacheArea() {
+                  if (this.browseLog.length >= 10) {
+                    this.browseLog.shift()
+                  }
+                  this.browseLog.push(this.cacheArea)
                 },
               },
               methods: {
