@@ -1,0 +1,23 @@
+組件：
+- search bar
+- landscape list : 側邊欄的景點名稱
+- history : 瀏覽紀錄
+- display : 呈現所選資料的頁面
+
+
+流程：
+
+1. 點選景點
+選擇景點 -> 呈現所選資料的頁面（圖片、google map、名稱、介紹內容）
+
+2. 在search bar上搜尋 -> landscape list 會依據搜尋的名稱比對並顯示出名稱內有相符的項目
+
+3. 點選history section
+點選history section -> 由舊到新跳出最近選擇的項目名稱（且點選後也會直接跳到該項目的介紹欄）
+
+
+實作：
+1. 景點選擇
+1-1. render出所有項目名稱
+2-1. 製作@click，與display做連動
+2-1-1.當點選項目時，將項目傳入function中，function再將項目的內容傳入display的資料中。
