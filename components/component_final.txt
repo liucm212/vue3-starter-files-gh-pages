@@ -1,0 +1,15 @@
+Display : 
+- 以卡片方式呈現所有cards
+- 下方Pagination做換頁的動作
+
+
+outside Data: 
+- 高雄旅遊資訊（一次get 20組data）
+
+
+Components : 
+- card : 呈現資訊的卡片
+  - data : 
+    content : {} 裝單筆資料的物件
+  - template : 
+    
