@@ -28,12 +28,21 @@
             </ol>
 
             <div id="app" class="row" id="content">
-              {{pageData}}
-              <!-- <card></card> -->
+              <card
+                v-for="item in dataDisplay"
+                :key="item.id"
+                :item="item"
+              ></card>
             </div>
             <div class="d-flex justify-content-center mt-4">
               <nav aria-label="Page navigation example">
-                <ul class="pagination" id="pageid"></ul>
+                <pagination
+                  v-if="pageData.pageTotal"
+                  :total-page="pageData.pageTotal"
+                  :current-page="pageData.currentPage"
+                  @switch-page="switchPage"
+                >
+                </pagination>
               </nav>
             </div>
           </div>
@@ -49,28 +58,32 @@
             // API 路徑：https://api.kcg.gov.tw/api/service/Get/9c8e1450-e833-499c-8320-29b36b7ace5c
             // 備用 API：https://raw.githubusercontent.com/hexschool/KCGTravel/master/datastore_search.json
 
-            /*
-                        function 流程說明
-                        使用者點擊pagination button -> 呼叫switch()切換目前頁面 -> 呼叫pagination(jsonData, nowPage)調整目前頁面要render的資料 ->  呼叫displayData(要render的data)render畫面 -> pageBtn(目前page資料)調整pagination button的呈現 -> 流程結束！
-                        */
-
             // 外部Vue
             const App = Vue.createApp({
               data() {
                 return {
                   // 儲存從api取得的data
                   datastore: [],
+                  // 要傳出去的data
+                  dataDisplay: [],
+                  // perpage : 每頁有幾筆資料
+                  perpage: 20,
                   /*
                   目前頁面的資訊:
                   - pageTotal : number, the total amount of apidata
-                  - curentPage : number, the page current display
-                  - hasPrevious : boolean, whether have previous page
-                  - hasNext : boolean, whether have next page
+                  - currentPage : number, the page current display
                   用途：
                   - 用來產生要給card component的資料
                   */
                   pageData: {},
                 }
+              },
+              computed: {
+                pageTotal() {
+                  // console.log(this.datastore)
+
+                  return Math.ceil(this.datastore.length / this.perpage)
+                },
               },
               methods: {
                 // get data from api
@@ -83,58 +96,97 @@
                     console.log(res)
 
                     this.datastore = [...res.data.data.XML_Head.Infos.Info]
-                    console.dir('datastore: ' + this.datastore)
+                    // console.dir('datastore: ' + this.datastore)
                   } catch (error) {
                     console.log(error)
                   }
                   this.createPage()
+                  this.updateData()
                 },
                 // create page data
                 createPage() {
                   console.log('set properties and contents in this.page')
-                  console.dir('setPage get datastore : ' + this.datastore)
-                  // 總共有多少筆資料
-                  const dataTotal = this.datastore.length
-                  // 每頁有幾筆資料
-                  const perPage = 20
+                  // console.dir('setPage get datastore : ' + this.datastore)
                   //初始page在第一頁
                   const currentPage = 1
-                  // 計算總頁數
-                  const pageTotal = Math.ceil(dataTotal / perPage)
-                  console.log('dataTotal' + dataTotal)
-                  console.log('pageTotal : ' + pageTotal)
 
                   this.pageData = {
-                    pageTotal,
                     currentPage,
-                    hasPrevious: true,
-                    hasNext: true,
+                    pageTotal: this.pageTotal,
+                    hasPrevious: this.hasPrevious,
+                    hasNext: this.hasNext,
                   }
                 },
-                // 當pagination傳出變更頁數的資料，就要在設定page一次
+                // 當pagination傳出變更頁數的資料，就要再設定page一次
                 setPage(newPageData) {
                   console.log('新頁數資訊：' + newPageData)
                 },
+                // 調整要呈現的data
+                updateData() {
+                  const start = (this.pageData.currentPage - 1) * this.perpage
+                  const end = start + this.perpage
+                  // slice(start, end) => 包含start 不包含end
+                  this.dataDisplay = this.datastore.slice(start, end)
+                  console.log(`開始 : ${start}, 結束 : ${end - 1}`)
+                },
+                // 更換目前頁面
+                switchPage(newPage) {
+                  console.log(newPage)
+                  // 更換currentPage into newPage
+                  this.pageData.currentPage = newPage
+                  // update the dataDisplay
+                  this.updateData()
+                },
               },
               created() {
+                // initialize data
                 this.createData()
               },
             })
 
             /*
-            card component : 呈現資料的元件
-            methods :
-            - displayData(目前要呈現的data) : 呈現資料
-            */
+                  card component : 呈現資料的元件
+                  methods :
+                  - displayData(目前要呈現的data) : 呈現資料
+                  */
             App.component('card', {
+              props: {
+                // single data get from outside
+                item: Object,
+              },
               data() {
                 return {}
               },
-              methods: {
-                displayData(data) {
-                  console.log('displayData()：呈現資訊')
-                },
-              },
+              template: `
+              <div class="col-md-6 py-2">
+                <div class="card">
+                  <div class="card bg-dark text-white text-left">
+                    <img class="card-img-top img-cover" height="155" :src="
+                      item.Picture1
+                    ">
+                    <div class="card-img-overlay d-flex justify-content-between align-items-end p-0 px-3" style="background-color: rgba(0, 0, 0, .2)">
+                      <h5 class="card-img-title-lg">{{
+                        item.Name
+                      }}</h5><h5 class="card-img-title-sm">{{item.Zone}}</h5>
+                    </div>
+                  </div>
+                  <div class="card-body text-left">
+                      <p class="card-text"><i class="far fa-clock fa-clock-time"></i>&nbsp;{{
+                        item.Opentime
+                      }}</p>
+                      <p class="card-text"><i class="fas fa-map-marker-alt fa-map-gps"></i>&nbsp;{{
+                        item.Add
+                      }}</p>
+                      <p class="card-text"><i class="fas fa-mobile-alt fa-mobile"></i>&nbsp;{{
+                        item.Tel
+                      }}</p>
+                    {{
+                      item.Ticketinfo
+                    }}
+                  </div>
+                </div>
+              </div>
+              `,
             })
 
             /*
@@ -142,25 +194,63 @@
             methods :
             - pageBtn(目前頁數資訊) : 處理分頁呈現
             - switchPage($event) : 處理換頁
-            data :
+            displayData :
             - page : 目前所在頁面的資訊
 
             */
             App.component('pagination', {
+              props: {
+                // 總共頁數：知道數量才可以知道頁數的盡頭
+                totalPage: Number,
+                // 目前所在頁數：調整previous&next button, active button
+                currentPage: Number,
+              },
               data() {
                 return {}
               },
-              methods: {
-                pageBtn(page) {
-                  console.log('pageBtn():呈現pagination button')
+              // 監聽emits methods
+              emits: ['switch-page'],
+              computed: {
+                hasPrevious() {
+                  if (this.currentPage > 1) {
+                    return true
+                  } else {
+                    return false
+                  }
                 },
-                switchPage() {
-                  console.log('switchPage():傳送換頁資訊給外部。')
+                hasNext() {
+                  if (this.currentPage < this.totalPage) {
+                    return true
+                  } else {
+                    return false
+                  }
+                },
+              },
+              methods: {
+                switchPage(newPage) {
+                  if (newPage >= 1 && newPage <= this.totalPage) {
+                    console.log(
+                      'emit switch-page event from pagination component to outside Vue.'
+                    )
+                    console.log('next page' + newPage)
+                    this.$emit('switch-page', newPage)
+                  } else {
+                    //do nothing
+                  }
                 },
               },
               template: `
+              <ul class="pagination" id="pageid" >
+                <!-- previous button -->
+                <li :class="{'disabled' : !hasPrevious}" class="page-item"><a class="page-link" href="#"  @click.prevent="switchPage(currentPage -1)">Previous</a></li>
 
-                          `,
+                <!-- 頁碼 -->
+                <li v-for="item in totalPage" :key="item" :class="{'active' : item === currentPage}" @click.prevent="switchPage(item)" class="page-item"><a class="page-link" href="#">{{item}}</a></li>
+
+                <!-- next button -->
+                <li :class="{'disabled' : !hasNext}" class="page-item"><a class="page-link" href="#"  @click.prevent="switchPage(currentPage +1)">Next</a></li>
+              </ul>
+              `,
             })
 
             App.mount('#app')

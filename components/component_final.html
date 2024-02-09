@@ -204,9 +204,7 @@
 
               // 如果在目前頁數有下一頁，就加入Next的button(傳入下一頁資料)
               if (page.hasNext) {
-                str += `<li class="page-item"><a class="page-link" href="#" data-page="${
-                  Number(page.currentPage) + 1
-                }">Next</a></li>`
+                str += `<li class="page-item"><span class="page-link">Next</span></li>`
                 // 沒有下一頁就做一個disabled的Next button
               } else {
                 str += `<li class="page-item disabled"><span class="page-link">Next</span></li>`
