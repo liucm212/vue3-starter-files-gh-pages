@@ -112,7 +112,7 @@
               },
               computed: {
                 mapURL() {
-                  return `https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=${this.datastore.Py},${this.datastore.Px}(${this.datastore.Name})&z=16&output=embed`
+                  return `https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=${this.cacheArea.Py},${this.cacheArea.Px}(${this.cacheArea.Name})&z=16&output=embed`
                 },
                 filterData() {
                   return this.datastore.filter((item) => {
